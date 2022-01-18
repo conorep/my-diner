@@ -1,0 +1,14 @@
+{
+  "name": "cobrien2/328/my-diner",
+  "description": "My Diner F3 MVC Prj",
+  "license": "open source",
+  "authors": [
+    {
+      "name": "Conor OBrien",
+      "email": "obrien.conor@student.greenriver.edu"
+    }
+  ],
+  "require": {
+    "bcosca/fatfree-core": "dev-master"
+  }
+}
