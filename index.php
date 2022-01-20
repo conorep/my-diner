@@ -12,6 +12,8 @@ require_once('vendor/autoload.php');
 //create an instance of the Base class for fat free
 $f3 = Base::instance();
 
+//define a default route
+//mapping!
 $f3->route('GET /', function()
 {
     /*echo "<h1>My Diner</h1>";*/
@@ -27,7 +29,7 @@ $f3->run();
 <!--
 Conor O'Brien SDEV328
 My Diner Assignment 1/18/2022
-index.html
+index.php
 -->
 <!doctype html>
 <html lang="en">
