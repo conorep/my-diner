@@ -19,7 +19,36 @@ $f3->route('GET /', function()
     /*echo "<h1>My Diner</h1>";*/
 
     $views = new Template();
+    //like an include
     echo $views->render('views/home.html');
+});
+
+//define a breakfast route
+$f3->route('GET /breakfast', function()
+{
+    $views = new Template();
+    echo $views->render('views/breakfast-menu.html');
+});
+
+//define a lunch route
+$f3->route('GET /lunch', function()
+{
+    $views = new Template();
+    echo $views->render('views/lunch.html');
+});
+
+//define a route for order 1
+$f3->route('GET /order1', function()
+{
+    $views = new Template();
+    echo $views->render('views/orderForm1.html');
+});
+
+//define a route for order 2
+$f3->route('GET /order2', function()
+{
+    $views = new Template();
+    echo $views->render('views/orderForm2.html');
 });
 
 //run fat-free -> invokes
