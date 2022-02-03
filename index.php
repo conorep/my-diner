@@ -72,7 +72,14 @@ $f3->route('GET|POST /order2', function($f3)
         //TODO: Validate the data
 
         //add data to session variable
-        $_SESSION['conds'] = $_POST['conds'];
+        if (isset($_POST['conds']))
+        {
+            $_SESSION['conds'] = implode(", ", $_POST['conds']);
+        } else
+        {
+            $_SESSION['conds'] = "None selected.";
+        }
+
 
         //redirect user to next page
         $f3->reroute('summary');
@@ -88,6 +95,8 @@ $f3->route('GET /summary', function()
 {
     $views = new Template();
     echo $views->render('views/summary.html');
+    //clear the session data to start again
+    session_destroy();
 });
 
 //run fat-free -> invokes
