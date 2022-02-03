@@ -1,10 +1,14 @@
 <?php
-
 //this is my controller
+//output buffering
+ob_start();
 
 //turn on error reporting
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+
+session_start();
+var_dump($_SESSION);
 
 //require the autoload file
 require_once('vendor/autoload.php');
@@ -16,7 +20,7 @@ $f3 = Base::instance();
 //mapping!
 $f3->route('GET /', function()
 {
-    /*echo "<h1>My Diner</h1>";*/
+    session_destroy();
 
     $views = new Template();
     //like an include
@@ -33,51 +37,67 @@ $f3->route('GET /breakfast', function()
 //define a lunch route
 $f3->route('GET /lunch', function()
 {
+
     $views = new Template();
     echo $views->render('views/lunch.html');
 });
 
 //define a route for order 1
-$f3->route('GET /order1', function()
+$f3->route('GET|POST /order1', function($f3)
 {
+    //if the form has been posted
+    if ($_SERVER['REQUEST_METHOD'] == 'POST')
+    {
+        //TODO: Validate the data
+
+        //add data to session variable
+        $_SESSION['food'] = $_POST['food'];
+        $_SESSION['meal'] = $_POST['meal'];
+
+        //redirect user to next page
+        $f3->reroute('order2');
+    }
+
+
     $views = new Template();
     echo $views->render('views/orderForm1.html');
 });
 
 //define a route for order 2
-$f3->route('GET /order2', function()
+$f3->route('GET|POST /order2', function($f3)
 {
+    //if the form has been posted
+    if ($_SERVER['REQUEST_METHOD'] == 'POST')
+    {
+        //TODO: Validate the data
+
+        //add data to session variable
+        $_SESSION['conds'] = $_POST['conds'];
+
+        //redirect user to next page
+        $f3->reroute('summary');
+    }
+
+
     $views = new Template();
     echo $views->render('views/orderForm2.html');
 });
 
-//run fat-free -> invokes
-$f3->run();
+//route for summary
+$f3->route('GET /summary', function()
+{
+    $views = new Template();
+    echo $views->render('views/summary.html');
+});
 
-?>
-<!--
-Conor O'Brien SDEV328
+//run fat-free -> invokes
+$f3->run();\
+
+/*
+ * Conor O'Brien SDEV328
 My Diner Assignment 1/18/2022
 index.php
--->
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>My Diner</title>
+*/
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <link rel="stylesheet" href="styles/styles.css">
-
-    <!--  Favicon  -->
-    <link rel="icon" type="image/png" href="images/fallWork.jpg">
-</head>
-<body>
-
-</body>
-</html>
+//send output to the browser
+ob_flush();
