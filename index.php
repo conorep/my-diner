@@ -12,6 +12,7 @@ var_dump($_SESSION);
 
 //require the autoload file
 require_once('vendor/autoload.php');
+require('model/data-layer.php');
 
 //create an instance of the Base class for fat free
 $f3 = Base::instance();
@@ -45,6 +46,7 @@ $f3->route('GET /lunch', function()
 //define a route for order 1
 $f3->route('GET|POST /order1', function($f3)
 {
+    $f3->set('meals', getMeal());
     //if the form has been posted
     if ($_SERVER['REQUEST_METHOD'] == 'POST')
     {
@@ -66,6 +68,8 @@ $f3->route('GET|POST /order1', function($f3)
 //define a route for order 2
 $f3->route('GET|POST /order2', function($f3)
 {
+    //get condiments from model and add to hive
+    $f3->set('conds', getCondiments());
     //if the form has been posted
     if ($_SERVER['REQUEST_METHOD'] == 'POST')
     {
@@ -82,12 +86,32 @@ $f3->route('GET|POST /order2', function($f3)
 
 
         //redirect user to next page
-        $f3->reroute('summary');
+        $f3->reroute('order3');
     }
+
 
 
     $views = new Template();
     echo $views->render('views/orderForm2.html');
+});
+
+//define a form3 route
+$f3->route('GET|POST /order3', function($f3)
+{
+    $f3->set('drinks', getDrinks());
+    //if the form has been posted
+    if ($_SERVER['REQUEST_METHOD'] == 'POST')
+    {
+        //add data to session variable
+        $_SESSION['drink'] = $_POST['drink'];
+
+        //redirect user to next page
+        $f3->reroute('summary');
+
+    }
+
+    $views = new Template();
+    echo $views->render('views/orderForm3.html');
 });
 
 //route for summary

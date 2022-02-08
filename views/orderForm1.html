@@ -17,17 +17,15 @@
             <div class="form-group">
                 <label class="col-sm-4 control-label">Select a meal</label>
                 <div class="col-sm-4">
-                    <label><input type="radio" name="meal" value="breakfast" > Breakfast
-                    </label><br>
-                    <label><input type="radio" name="meal" value="lunch" > Lunch
-                    </label><br>
-                    <label><input type="radio" name="meal" value="dinner" > Dinner
-                    </label><br>
+                    <repeat group="{{@meals}}" value="{{@meal}}">
+                        <label><input type="radio" name="meal" value="{{@meal}}" > {{ucfirst(@meal)}}
+                        </label><br>
+                    </repeat>
                 </div>
             </div>
             
             <div class="col-xs-3 ">
-                <input class="form-control btn btn-default"
+                <input class="form-control btn btn-primary w-25"
                        type="submit" value="Next">
             </div>
         </form>
