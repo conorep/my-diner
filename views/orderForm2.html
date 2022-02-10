@@ -14,6 +14,12 @@
                         <label><input type="checkbox" name="conds[]" value="{{@condiment}}"> {{ucfirst(@condiment)}}</label><br>
                     </repeat>
                 </div>
+    
+                <!--display error if there is one -->
+                <check if="{{ isset(@errors['condiments']) }}">
+                    <span class="err">{{ @errors['condiments'] }}</span>
+                </check>
+                
             </div>
             <div class="col-xs-3 ">
                 <input class="form-control btn btn-primary w-25"

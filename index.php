@@ -13,6 +13,8 @@ var_dump($_SESSION);
 //require the autoload file
 require_once('vendor/autoload.php');
 require('model/data-layer.php');
+require('model/validation-functions.php');
+
 
 //create an instance of the Base class for fat free
 $f3 = Base::instance();
@@ -38,7 +40,6 @@ $f3->route('GET /breakfast', function()
 //define a lunch route
 $f3->route('GET /lunch', function()
 {
-
     $views = new Template();
     echo $views->render('views/lunch.html');
 });
@@ -46,20 +47,48 @@ $f3->route('GET /lunch', function()
 //define a route for order 1
 $f3->route('GET|POST /order1', function($f3)
 {
+    //initialize input variables.
+    $food = "";
+    $meal = '';
+
+
     $f3->set('meals', getMeal());
     //if the form has been posted
     if ($_SERVER['REQUEST_METHOD'] == 'POST')
     {
-        //TODO: Validate the data
+        $food = $_POST['food'];
+        $meal = $_POST['meal'];
 
-        //add data to session variable
-        $_SESSION['food'] = $_POST['food'];
-        $_SESSION['meal'] = $_POST['meal'];
+        //DONE: Validate the data
+        if(validFood($food))
+        {
+            //add data to session variable
+            $_SESSION['food'] = $food;
 
-        //redirect user to next page
-        $f3->reroute('order2');
+            //could do this to not have to session_start
+            /*        $f3->set('SESSION.food', $f3->get('POST.food'));
+                    $f3->set('SESSION.meal', $f3->get('POST.meal'));*/
+        } else{
+            $f3->set('errors["food"]', 'Please enter a food!');
+        }
+
+        if(validMeal($meal))
+        {
+            $_SESSION['meal'] = $meal;
+        } else
+        {
+            $f3->set('errors["meal"]', 'Please select a valid meal!');
+        }
+
+        //redirect user to next page if no errors
+        if(empty($f3->get('errors')))
+        {
+            $f3->reroute('order2');
+        }
     }
 
+    $f3->set('food', $food);
+    $f3->set('userMeal', $meal);
 
     $views = new Template();
     echo $views->render('views/orderForm1.html');
@@ -70,26 +99,30 @@ $f3->route('GET|POST /order2', function($f3)
 {
     //get condiments from model and add to hive
     $f3->set('conds', getCondiments());
+
     //if the form has been posted
     if ($_SERVER['REQUEST_METHOD'] == 'POST')
     {
-        //TODO: Validate the data
-
-        //add data to session variable
-        if (isset($_POST['conds']))
+        //DONE: Validate the data
+        if(validCondiments($_POST['conds']))
         {
-            $_SESSION['conds'] = implode(", ", $_POST['conds']);
+            //add data to session variable
+            if (isset($_POST['conds']))
+            {
+                $_SESSION['conds'] = implode(", ", $_POST['conds']);
+            } else
+            {
+                $_SESSION['conds'] = "None selected.";
+            }
+
+            //redirect user to next page
+            $f3->reroute('order3');
         } else
         {
-            $_SESSION['conds'] = "None selected.";
+            $f3->set('errors["condiments"]', 'Please select valid condiments!');
         }
 
-
-        //redirect user to next page
-        $f3->reroute('order3');
     }
-
-
 
     $views = new Template();
     echo $views->render('views/orderForm2.html');
